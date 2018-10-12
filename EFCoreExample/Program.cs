@@ -9,13 +9,21 @@ namespace EFCoreExample
         static void Main(string[] args)
         {
             MyContext context = new MyContext();
-            context.Students.Add(
-                new StudentPoco()
-                {
-                    Id = 1,
-                    Name = "Sally Jones"
-                  
-                });
+
+            StudentPoco student = new StudentPoco()
+            {
+                //Id = 100,
+                Name = "Sally Jones"
+            };
+
+            Course course = new Course()
+            {
+                //Id = 100,
+                Students = new List<StudentPoco>() { student },
+                Teacher = new Teacher() { Name = "Joe Smith" }
+            };
+
+            context.Courses.Add(course);
 
             context.SaveChanges();
         }
@@ -29,7 +37,7 @@ namespace EFCoreExample
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=School;Integrated Security=True;Connect Timeout=30;");
+            builder.UseSqlServer(@"Data Source=ODLTJH;Initial Catalog=School;Integrated Security=True;Connect Timeout=30;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,7 +57,6 @@ namespace EFCoreExample
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        //public virtual ICollection<CourseToStudent> Courses { get; set; }
     }
 
     public class Course
@@ -58,15 +65,6 @@ namespace EFCoreExample
         public virtual ICollection<StudentPoco> Students {get;set;}
         public Teacher Teacher { get; set; }
     }
-
-    //public class CourseToStudent
-    //{
-    //    public int CourseId { get; set; }
-    //    public Course Course { get; set; }
-    //    public int StudentId { get; set; }
-    //    public StudentPoco Student { get; set; }
-    //}
-
     public class Teacher
     {
         public int Id { get; set; }
